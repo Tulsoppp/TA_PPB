@@ -1,0 +1,23 @@
+/* Custom Styling SIAKAD Terpadu S1 Teknik Informatika UTM */
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.utm-gradient {
+  background: linear-gradient(135deg, #0b192c 0%, #1e3a8a 60%, #172554 100%);
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+  }
+  .print-box {
+    box-shadow: none !important;
+    border: 1px solid #000 !important;
+  }
+}

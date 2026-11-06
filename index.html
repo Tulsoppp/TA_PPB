@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIAKAD Terpadu — Program Studi S1 Teknik Informatika UTM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- ================= GERBANG LOGIN UTAMA SIAKAD UTM ================= -->
+  <div id="loginScreen" class="min-h-screen flex flex-col justify-between utm-gradient text-white relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(#fbbf24 1px, transparent 1px); background-size: 28px 28px;"></div>
+
+    <!-- Header Kampus -->
+    <header class="relative z-10 max-w-6xl w-full mx-auto px-6 pt-8 flex items-center justify-between">
+      <div class="flex items-center gap-3.5">
+        <div class="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center font-extrabold text-xl shadow-lg border-2 border-amber-200">
+          UTM
+        </div>
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-widest text-amber-300 block">Kementerian Pendidikan Tinggi, Sains, dan Teknologi</span>
+          <h1 class="text-lg md:text-xl font-extrabold tracking-tight text-white">UNIVERSITAS TRUNODJOYO MADURA</h1>
+          <p class="text-xs text-slate-300">Sistem Informasi Akademik (SIAKAD) • Fakultas Teknik</p>
+        </div>
+      </div>
+      <div class="hidden sm:flex items-center gap-2 bg-white/10 border border-white/15 px-3.5 py-2 rounded-xl text-xs">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>Semester Ganjil 2026/2027</span>
+      </div>
+    </header>
+
+    <!-- Kotak Login Tunggal -->
+    <main class="relative z-10 flex-1 flex items-center justify-center px-4 py-10">
+      <div class="w-full max-w-md bg-white text-slate-900 rounded-3xl shadow-2xl border border-slate-200 p-8">
+        <div class="text-center mb-6">
+          <span class="inline-block px-3 py-1 rounded-full bg-blue-50 text-blue-800 font-bold text-[11px] uppercase tracking-wider border border-blue-200 mb-2">
+            Single Sign-On (SSO) SIAKAD
+          </span>
+          <h2 class="text-2xl font-extrabold text-slate-900">Masuk ke Portal Akademik</h2>
+          <p class="text-xs text-slate-500 mt-1">
+            Gunakan email resmi Universitas Trunodjoyo Madura sesuai hak akses Anda
+          </p>
+        </div>
+
+        <!-- Notifikasi Error Login -->
+        <div id="loginErrorBox" class="hidden mb-5 p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
+          <div class="font-bold text-rose-800 mb-0.5 flex items-center gap-1.5">
+            <span>⚠️</span> <span id="loginErrorTitle">Akses Ditolak</span>
+          </div>
+          <p id="loginErrorDesc"></p>
+        </div>
+
+        <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              Alamat Email Resmi Terdaftar
+            </label>
+            <input
+              id="emailInput"
+              type="email"
+              required
+              autocomplete="username"
+              placeholder="nim@student.trunojoyo.ac.id / nama@trunojoyo.ac.id"
+              class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-700 transition"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              Kata Sandi SIAKAD
+            </label>
+            <input
+              id="passwordInput"
+              type="password"
+              required
+              autocomplete="current-password"
+              placeholder="Masukkan kata sandi akun..."
+              class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-700 transition"
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="w-full py-3.5 px-5 rounded-xl bg-blue-900 hover:bg-blue-800 text-white font-bold text-sm shadow-lg shadow-blue-900/20 transition flex items-center justify-center gap-2"
+          >
+            <span>Masuk ke Sistem Akademik</span>
+            <span>→</span>
+          </button>
+        </form>
+
+        <div class="mt-6 pt-5 border-t border-slate-200 text-center">
+          <p class="text-[11px] text-slate-500 leading-relaxed">
+            Sistem memvalidasi otorisasi halaman secara otomatis berdasarkan alamat email pengguna yang terdaftar di Pangkalan Data Akademik Teknik Informatika UTM.
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer Login -->
+    <footer class="relative z-10 text-center py-4 text-xs text-slate-400 border-t border-white/10">
+      © 2026 Program Studi S1 Teknik Informatika • Fakultas Teknik • Universitas Trunodjoyo Madura
+    </footer>
+  </div>
+
+  <!-- ================= PORTAL UTAMA PASCA-LOGIN ================= -->
+  <div id="appScreen" class="hidden flex-1 flex flex-col">
+    <!-- Topbar Navigasi -->
+    <header class="utm-gradient text-white shadow-lg sticky top-0 z-40 no-print">
+      <div class="max-w-7xl mx-auto px-4 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-xl bg-amber-400 text-slate-950 font-extrabold flex items-center justify-center text-lg shadow border border-amber-200">
+            UTM
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded bg-amber-400/20 text-amber-300 border border-amber-300/30">
+                SIAKAD TERPADU
+              </span>
+              <span id="navRoleBadge" class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                PORTAL PENGGUNA
+              </span>
+            </div>
+            <h1 class="text-base md:text-lg font-extrabold tracking-tight mt-0.5">
+              Program Studi S1 Teknik Informatika — Universitas Trunodjoyo Madura
+            </h1>
+          </div>
+        </div>
+
+        <!-- Info Akun Aktif & Logout -->
+        <div class="flex items-center gap-2.5">
+          <div class="text-right hidden sm:block mr-1">
+            <div id="navUserName" class="text-sm font-bold text-white">-</div>
+            <div id="navUserEmail" class="text-[11px] text-amber-300 font-mono">-</div>
+          </div>
+          <button
+            onclick="resetDemoData()"
+            title="Reset Data Simulasi ke Awal"
+            class="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/15 transition"
+          >
+            🔄 Reset Data
+          </button>
+          <button
+            onclick="handleLogout()"
+            class="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow transition flex items-center gap-1.5"
+          >
+            <span>Keluar (Logout)</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Konten Dinamis Berdasarkan Peran -->
+    <main class="max-w-7xl w-full mx-auto px-4 lg:px-8 py-6 flex-1 space-y-6">
+
+      <!-- ========================================================================= -->
+      <!-- 1. PORTAL MAHASISWA (@student.trunojoyo.ac.id)                            -->
+      <!-- ========================================================================= -->
+      <div id="studentPortalContainer" class="hidden space-y-6">
+        <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 no-print">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+            <div class="lg:col-span-6 flex items-center gap-4">
+              <div id="mhsAvatar" class="w-14 h-14 rounded-2xl bg-blue-900 text-amber-300 font-extrabold text-xl flex items-center justify-center shadow-md shrink-0">
+                AM
+              </div>
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-xs font-bold uppercase tracking-wider text-blue-800 bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full">
+                    Mahasiswa Aktif
+                  </span>
+                  <span id="mhsStatusBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                    Status KRS: Belum Diajukan
+                  </span>
+                </div>
+                <h2 id="mhsFullName" class="text-xl font-extrabold text-slate-900 mt-1">-</h2>
+                <p class="text-xs text-slate-500">
+                  NIM: <strong id="mhsNim" class="text-slate-800 font-mono">-</strong> • Kelas Asal: <strong id="mhsClass" class="text-slate-800">IF 7B</strong> • Dosen Wali: <strong class="text-slate-800">Rika Yunitarini ST., MT.</strong>
+                </p>
+              </div>
+            </div>
+
+            <div class="lg:col-span-6 grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 lg:pt-0 border-t lg:border-t-0 border-slate-100">
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                <span class="text-[11px] text-slate-500 block">Semester / IPK</span>
+                <span id="mhsIpk" class="text-sm font-extrabold text-slate-900">Sem 5 / 3.75</span>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                <span class="text-[11px] text-slate-500 block">Batas Beban SKS</span>
+                <span class="text-sm font-extrabold text-blue-900">Maks. 24 SKS</span>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                <span class="text-[11px] text-slate-500 block">SKS Dipilih</span>
+                <span id="mhsSelectedSks" class="text-sm font-extrabold text-emerald-700">0 / 24 SKS</span>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                <span class="text-[11px] text-slate-500 block">Laporan Kuota</span>
+                <span id="mhsReportCount" class="text-sm font-extrabold text-amber-700">0 Mata Kuliah</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Banner Pengumuman Pembukaan Kelas Baru -->
+        <div id="studentBroadcastBanner" class="hidden no-print rounded-2xl bg-emerald-900 text-white p-4 shadow-md border border-emerald-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">📢</span>
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded bg-emerald-400/20 text-emerald-200 border border-emerald-400/30">
+                INFORMASI AKADEMIK & ADVOKASI HIMATIF
+              </span>
+              <h3 class="text-sm font-extrabold mt-1">Penambahan Kuota / Kelas Baru Telah Dibuka!</h3>
+              <p id="studentBroadcastText" class="text-xs text-emerald-100 mt-0.5"></p>
+            </div>
+          </div>
+          <button onclick="switchStudentTab('krs')" class="shrink-0 px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs transition">
+            Ambil Kelas Sekarang →
+          </button>
+        </div>
+
+        <!-- Banner Catatan Dosen Wali -->
+        <div id="studentAdvisorNoteBanner" class="hidden no-print rounded-2xl p-4 shadow-sm border flex flex-col sm:flex-row sm:items-center justify-between gap-4"></div>
+
+        <!-- Tab Navigasi Mahasiswa -->
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3 no-print">
+          <div class="flex flex-wrap gap-2">
+            <button onclick="switchStudentTab('krs')" id="tabBtn_krs" class="px-4 py-2.5 rounded-xl font-bold text-xs transition flex items-center gap-2 bg-blue-900 text-white shadow">
+              <span>📚</span>
+              <span>1. Pengisian Rencana Studi (KRS)</span>
+            </button>
+            <button onclick="switchStudentTab('advokasi')" id="tabBtn_advokasi" class="px-4 py-2.5 rounded-xl font-bold text-xs transition flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-100 border border-slate-200">
+              <span>📝</span>
+              <span>2. Lapor Kendala Kuota (Advokasi Himatif)</span>
+              <span id="badgeTabAdvokasi" class="px-1.5 py-0.5 text-[10px] rounded-full bg-amber-100 text-amber-800 font-extrabold">0</span>
+            </button>
+            <button onclick="switchStudentTab('cetak')" id="tabBtn_cetak" class="px-4 py-2.5 rounded-xl font-bold text-xs transition flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-100 border border-slate-200">
+              <span>🖨️</span>
+              <span>3. Status Validasi & Lembar KRS Resmi</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB 1 MAHASISWA: PENGISIAN KRS -->
+        <div id="studentTab_krs" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="lg:col-span-8 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h3 class="text-base font-extrabold text-slate-900">Daftar Penawaran Mata Kuliah Semester Ganjil 2026/2027</h3>
+                <p class="text-xs text-slate-500 mt-0.5">
+                  Pilih kelas mata kuliah yang tersedia. Jika kelas wajib berstatus <strong class="text-rose-600">PENUH</strong>, ajukan laporan kuota ke Himatif.
+                </p>
+              </div>
+              <select id="courseFilterSelect" onchange="renderStudentCourses()" class="text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 font-semibold text-slate-700">
+                <option value="all">Semua Mata Kuliah</option>
+                <option value="available">Kuota Tersedia</option>
+                <option value="full">Kelas Penuh (Kuota Habis)</option>
+              </select>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <th class="py-3.5 px-4">Kode & Mata Kuliah</th>
+                    <th class="py-3.5 px-3 text-center">SKS</th>
+                    <th class="py-3.5 px-3">Kelas & Jadwal</th>
+                    <th class="py-3.5 px-3 text-center">Kapasitas Kuota</th>
+                    <th class="py-3.5 px-4 text-right">Aksi Pengambilan</th>
+                  </tr>
+                </thead>
+                <tbody id="studentCourseTableBody" class="divide-y divide-slate-200 text-xs"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="lg:col-span-4 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4 sticky top-24">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div>
+                <h3 class="text-base font-extrabold text-slate-900">Rencana Studi Pilihan Anda</h3>
+                <p class="text-xs text-slate-500">Daftar mata kuliah dalam draf KRS</p>
+              </div>
+              <span id="cartSksPill" class="px-3 py-1 rounded-full text-xs font-extrabold bg-blue-50 text-blue-900 border border-blue-200">
+                0 / 24 SKS
+              </span>
+            </div>
+
+            <div id="studentCartList" class="space-y-2.5 max-h-80 overflow-y-auto pr-1"></div>
+            <div id="studentFullWarningBox" class="hidden p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs space-y-2"></div>
+
+            <div class="pt-3 border-t border-slate-200 space-y-2.5">
+              <button
+                id="btnSubmitKrs"
+                onclick="submitStudentKrs()"
+                class="w-full py-3 px-4 rounded-xl bg-blue-900 hover:bg-blue-800 disabled:bg-slate-300 disabled:text-slate-500 text-white font-bold text-xs shadow transition flex items-center justify-center gap-2"
+              >
+                <span>📤</span>
+                <span id="btnSubmitKrsLabel">Ajukan KRS ke Dosen Wali</span>
+              </button>
+              <p id="submitKrsHelper" class="text-[11px] text-slate-500 text-center leading-relaxed">
+                Pastikan seluruh mata kuliah wajib telah masuk ke dalam daftar sebelum mengajukan validasi ke Dosen Wali.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2 MAHASISWA: ADVOKASI HIMATIF -->
+        <div id="studentTab_advokasi" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+            <div>
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-300">
+                Layanan Advokasi Himatif UTM
+              </span>
+              <h3 class="text-lg font-extrabold text-slate-900 mt-2">Formulir Pelaporan Kehabisan Kuota Kelas</h3>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                Apabila mata kuliah yang wajib Anda tempuh pada semester ini telah penuh, isi formulir ini agar Himatif dapat merekapitulasi data dan mengajukan penambahan kuota/kelas baru ke Admin Prodi.
+              </p>
+            </div>
+
+            <form id="himatifReportForm" onsubmit="handleSubmitQuotaReport(event)" class="space-y-4 pt-2">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Identitas Mahasiswa Pelapor</label>
+                <input id="formRepStudentInfo" type="text" disabled class="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Pilih Mata Kuliah yang Kuotanya Penuh</label>
+                <select id="formRepCourseId" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-blue-700 focus:outline-none"></select>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Angkatan Mahasiswa</label>
+                  <input type="text" value="2024 (Semester 5)" disabled class="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Tingkat Urgensi</label>
+                  <select id="formRepUrgency" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-800">
+                    <option value="Wajib Semester Ini (Prioritas Utama)">Wajib Semester Ini</option>
+                    <option value="Prasyarat Tugas Akhir / Kerja Praktik">Prasyarat KP / Skripsi</option>
+                    <option value="Perbaikan Nilai / Mengulang">Mengulang / Perbaikan</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Keterangan Kendala (Opsional)</label>
+                <textarea id="formRepNotes" rows="3" placeholder="Contoh: Seluruh kursi kelas IF 7B pada mata kuliah ini sudah penuh saat jadwal pengisian dibuka..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-blue-700 focus:outline-none"></textarea>
+              </div>
+
+              <button type="submit" class="w-full py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs shadow transition flex items-center justify-center gap-2">
+                <span>📨</span>
+                <span>Kirim Laporan Kuota ke Himatif</span>
+              </button>
+            </form>
+          </div>
+
+          <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+              <div>
+                <h3 class="text-base font-extrabold text-slate-900">Riwayat & Status Laporan Kuota Kelas Anda</h3>
+                <p class="text-xs text-slate-500">Pantau proses tindak lanjut laporan dari Himatif hingga pembukaan kelas oleh Admin Prodi</p>
+              </div>
+            </div>
+            <div id="studentReportHistoryList" class="space-y-3"></div>
+          </div>
+        </div>
+
+        <!-- TAB 3 MAHASISWA: CETAK KRS -->
+        <div id="studentTab_cetak" class="hidden space-y-6">
+          <div id="validationStatusBanner" class="rounded-2xl p-5 border flex flex-col md:flex-row md:items-center justify-between gap-4 no-print"></div>
+
+          <div class="bg-white rounded-2xl border border-slate-300 shadow-sm p-8 max-w-4xl mx-auto print-box">
+            <div class="flex items-center justify-between border-b-2 border-slate-900 pb-4 mb-6">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-xl bg-blue-950 text-amber-300 font-extrabold text-xl flex items-center justify-center border border-slate-800">
+                  UTM
+                </div>
+                <div>
+                  <p class="text-[11px] font-bold uppercase tracking-wider text-slate-600">Kementerian Pendidikan Tinggi, Sains, dan Teknologi</p>
+                  <h3 class="text-lg font-extrabold text-slate-900">UNIVERSITAS TRUNODJOYO MADURA</h3>
+                  <p class="text-xs font-semibold text-slate-700">FAKULTAS TEKNIK • PROGRAM STUDI S1 TEKNIK INFORMATIKA</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="inline-block px-3 py-1 rounded border border-slate-900 text-xs font-extrabold uppercase tracking-wider">
+                  DOKUMEN KARTU RENCANA STUDI (KRS)
+                </span>
+                <p class="text-[11px] text-slate-500 mt-1">Semester Ganjil TA 2026/2027</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
+              <div class="space-y-1">
+                <div><span class="text-slate-500 inline-block w-32">Nama Mahasiswa</span>: <strong id="printMhsName" class="text-slate-900">-</strong></div>
+                <div><span class="text-slate-500 inline-block w-32">NIM</span>: <strong id="printMhsNim" class="text-slate-900 font-mono">-</strong></div>
+                <div><span class="text-slate-500 inline-block w-32">Program Studi</span>: <strong class="text-slate-900">S1 Teknik Informatika</strong></div>
+              </div>
+              <div class="space-y-1">
+                <div><span class="text-slate-500 inline-block w-36">Dosen Pembimbing</span>: <strong class="text-slate-900">Rika Yunitarini ST., MT.</strong></div>
+                <div><span class="text-slate-500 inline-block w-36">NIP Dosen Wali</span>: <strong class="text-slate-900 font-mono">198306072006042001</strong></div>
+                <div><span class="text-slate-500 inline-block w-36">Status Pengesahan</span>: <strong id="printMhsStatus" class="text-slate-900">-</strong></div>
+              </div>
+            </div>
+
+            <table class="w-full text-left border-collapse border border-slate-300 text-xs mb-6">
+              <thead>
+                <tr class="bg-slate-100 text-slate-800 font-bold">
+                  <th class="border border-slate-300 py-2.5 px-3 text-center w-10">No</th>
+                  <th class="border border-slate-300 py-2.5 px-3">Kode MK</th>
+                  <th class="border border-slate-300 py-2.5 px-3">Nama Mata Kuliah</th>
+                  <th class="border border-slate-300 py-2.5 px-3 text-center">Kelas</th>
+                  <th class="border border-slate-300 py-2.5 px-3">Jadwal & Ruang</th>
+                  <th class="border border-slate-300 py-2.5 px-3 text-center">SKS</th>
+                </tr>
+              </thead>
+              <tbody id="printKrsTableBody"></tbody>
+              <tfoot>
+                <tr class="bg-slate-50 font-extrabold text-slate-900">
+                  <td colspan="5" class="border border-slate-300 py-2.5 px-3 text-right">Total Beban Studi Semester Ini</td>
+                  <td id="printTotalSks" class="border border-slate-300 py-2.5 px-3 text-center">0 SKS</td>
+                </tr>
+              </tfoot>
+            </table>
+
+            <div class="grid grid-cols-2 gap-6 text-xs pt-4">
+              <div>
+                <p class="text-slate-500">Mahasiswa Yang Bersangkutan,</p>
+                <div class="h-16 flex items-end">
+                  <span class="text-[11px] text-slate-400 italic">Ditandatangani secara elektronik melalui SIAKAD UTM</span>
+                </div>
+                <p id="printSignMhsName" class="font-bold text-slate-900 underline mt-1">-</p>
+                <p id="printSignMhsNim" class="text-slate-600 font-mono">NIM. -</p>
+              </div>
+              <div class="text-right">
+                <p class="text-slate-500">Bangkalan, Semester Ganjil 2026/2027</p>
+                <p class="text-slate-500">Menyetujui, Dosen Pembimbing Akademik</p>
+                <div id="printDigitalStamp" class="h-16 flex items-center justify-end"></div>
+                <p class="font-bold text-slate-900 underline mt-1">Rika Yunitarini ST., MT.</p>
+                <p class="text-slate-600 font-mono">NIP. 198306072006042001</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- 2. PORTAL DOSEN WALI (rika.yunitarini@trunojoyo.ac.id)                    -->
+      <!-- ========================================================================= -->
+      <div id="advisorPortalContainer" class="hidden space-y-6">
+        <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+            <div class="lg:col-span-6 flex items-center gap-4">
+              <div class="w-14 h-14 rounded-2xl bg-emerald-800 text-amber-300 font-extrabold text-xl flex items-center justify-center shadow-md shrink-0">
+                RY
+              </div>
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+                    Dosen Pembimbing Akademik (Dosen Wali)
+                  </span>
+                  <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200">
+                    Perwalian Kelas IF 7B
+                  </span>
+                </div>
+                <h2 class="text-xl font-extrabold text-slate-900 mt-1">Rika Yunitarini ST., MT.</h2>
+                <p class="text-xs text-slate-500">
+                  NIP: <strong class="text-slate-800 font-mono">198306072006042001</strong> • Program Studi: <strong class="text-slate-800">S1 Teknik Informatika</strong>
+                </p>
+              </div>
+            </div>
+
+            <div class="lg:col-span-6 grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 lg:pt-0 border-t lg:border-t-0 border-slate-100">
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                <span class="text-[11px] text-slate-500 block">Mahasiswa Bimbingan</span>
+                <span id="dsnStatTotalMhs" class="text-base font-extrabold text-slate-900">5 Mahasiswa</span>
+              </div>
+              <div class="p-3 rounded-xl bg-amber-50 border border-amber-200">
+                <span class="text-[11px] text-amber-800 font-semibold block">Menunggu Validasi</span>
+                <span id="dsnStatPending" class="text-base font-extrabold text-amber-900">0 Pengajuan</span>
+              </div>
+              <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
+                <span class="text-[11px] text-emerald-800 font-semibold block">KRS Disetujui (ACC)</span>
+                <span id="dsnStatApproved" class="text-base font-extrabold text-emerald-900">0 Mahasiswa</span>
+              </div>
+              <div class="p-3 rounded-xl bg-rose-50 border border-rose-200">
+                <span class="text-[11px] text-rose-800 font-semibold block">Perlu Revisi / Draf</span>
+                <span id="dsnStatDraftRevision" class="text-base font-extrabold text-rose-900">0 Mahasiswa</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
+          <div class="flex flex-wrap gap-2">
+            <button onclick="switchAdvisorTab('queue')" id="dsnTabBtn_queue" class="px-4 py-2.5 rounded-xl font-bold text-xs transition flex items-center gap-2 bg-blue-900 text-white shadow">
+              <span>📋</span>
+              <span>1. Daftar & Antrean Validasi KRS Mahasiswa</span>
+              <span id="dsnBadgeQueue" class="px-1.5 py-0.5 text-[10px] rounded-full bg-amber-400 text-slate-950 font-extrabold">0</span>
+            </button>
+            <button onclick="switchAdvisorTab('review')" id="dsnTabBtn_review" class="px-4 py-2.5 rounded-xl font-bold text-xs transition flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-100 border border-slate-200">
+              <span>🔍</span>
+              <span>2. Peninjauan Detail & Pengesahan KRS</span>
+            </button>
+            <button onclick="switchAdvisorTab('monitoring')" id="dsnTabBtn_monitoring" class="px-4 py-2.5 rounded-xl font-bold text-xs transition flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-100 border border-slate-200">
+              <span>📊</span>
+              <span>3. Riwayat Perwalian & Pantauan Kuota Kelas</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB 1 DOSEN WALI -->
+        <div id="advisorTab_queue" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900">Daftar Mahasiswa Perwalian (Kelas IF 7B)</h3>
+              <p class="text-xs text-slate-500 mt-0.5">
+                Pilih mahasiswa untuk meninjau rincian mata kuliah, memeriksa kelayakan beban SKS, dan memberikan validasi KRS.
+              </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <input
+                id="dsnSearchInput"
+                type="text"
+                oninput="renderAdvisorStudentTable()"
+                placeholder="Cari nama atau NIM..."
+                class="text-xs border border-slate-300 rounded-xl px-3.5 py-2 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-700"
+              />
+              <select
+                id="dsnFilterStatus"
+                onchange="renderAdvisorStudentTable()"
+                class="text-xs border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 font-semibold text-slate-700"
+              >
+                <option value="all">Semua Status KRS</option>
+                <option value="submitted">Menunggu Validasi</option>
+                <option value="approved">Disetujui (ACC)</option>
+                <option value="revision">Perlu Revisi</option>
+                <option value="draft">Belum Mengajukan (Draf)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  <th class="py-3.5 px-4">Mahasiswa & NIM</th>
+                  <th class="py-3.5 px-3 text-center">IPS / IPK</th>
+                  <th class="py-3.5 px-3 text-center">Jumlah MK & SKS</th>
+                  <th class="py-3.5 px-3">Waktu Pengajuan</th>
+                  <th class="py-3.5 px-3 text-center">Status KRS</th>
+                  <th class="py-3.5 px-4 text-right">Tindakan Dosen Wali</th>
+                </tr>
+              </thead>
+              <tbody id="advisorStudentTableBody" class="divide-y divide-slate-200 text-xs"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 2 DOSEN WALI -->
+        <div id="advisorTab_review" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="lg:col-span-4 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4">
+            <div class="border-b border-slate-100 pb-3">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-blue-800 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
+                Pilih Mahasiswa Bimbingan
+              </span>
+              <h3 class="text-base font-extrabold text-slate-900 mt-1.5">Daftar Cepat Mahasiswa</h3>
+            </div>
+            <div id="advisorQuickStudentList" class="space-y-2"></div>
+          </div>
+
+          <div class="lg:col-span-8 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-6" id="advisorReviewDetailBox"></div>
+        </div>
+
+        <!-- TAB 3 DOSEN WALI -->
+        <div id="advisorTab_monitoring" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-200">
+              <h3 class="text-base font-extrabold text-slate-900">Pantauan Kapasitas Kelas Mata Kuliah Semester 5</h3>
+              <p class="text-xs text-slate-500 mt-0.5">
+                Informasi kuota kelas terkini untuk membantu Dosen Wali mengetahui kendala kapasitas kelas yang dialami mahasiswa bimbingan.
+              </p>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <th class="py-3 px-4">Mata Kuliah</th>
+                    <th class="py-3 px-3 text-center">Kelas</th>
+                    <th class="py-3 px-3">Jadwal & Ruang</th>
+                    <th class="py-3 px-3 text-center">Terisi / Kuota</th>
+                    <th class="py-3 px-4 text-right">Status Kelas</th>
+                  </tr>
+                </thead>
+                <tbody id="advisorCourseMonitorBody" class="divide-y divide-slate-200"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4">
+            <div class="border-b border-slate-100 pb-3">
+              <h3 class="text-base font-extrabold text-slate-900">Log Aktivitas Validasi Perwalian</h3>
+              <p class="text-xs text-slate-500">Catatan keputusan persetujuan dan revisi KRS oleh Dosen Wali</p>
+            </div>
+            <div id="advisorHistoryLogList" class="space-y-3 max-h-96 overflow-y-auto pr-1"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- 3. PORTAL ADMIN PRODI (admin.informatika@trunojoyo.ac.id)                 -->
+      <!-- ========================================================================= -->
+      <div id="adminPortalContainer" class="hidden space-y-6">
+        <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+            <div class="lg:col-span-6 flex items-center gap-4">
+              <div class="w-14 h-14 rounded-2xl bg-indigo-900 text-amber-300 font-extrabold text-xl flex items-center justify-center shadow-md shrink-0">
+                TU
+              </div>
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-xs font-bold uppercase tracking-wider text-indigo-900 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 rounded-full">
+                    Tata Usaha & Administrasi Akademik
+                  </span>
+                  <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+                    Eksekutor Kapasitas & Jadwal Kelas
+                  </span>
+                </div>
+                <h2 class="text-xl font-extrabold text-slate-900 mt-1">Admin Prodi S1 Teknik Informatika</h2>
+                <p class="text-xs text-slate-500">
+                  Unit Kerja: <strong class="text-slate-800">Fakultas Teknik UTM</strong> • Email: <strong class="text-slate-800 font-mono">admin.informatika@trunojoyo.ac.id</strong>
+                </p>
+              </div>
+            </div>
+
+            <div class="lg:col-span-6 grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 lg:pt-0 border-t lg:border-t-0 border-slate-100">
+              <div class="p-3 rounded-xl bg-rose-50 border border-rose-200">
+                <span class="text-[11px] text-rose-800 font-semibold block">Kelas Kuota Penuh</span>
+                <span id="admStatFullClasses" class="text-base font-extrabold text-rose-900">0 Kelas</span>
+              </div>
+              <div class="p-3 rounded-xl bg-amber-50 border border-amber-200">
+                <span class="text-[11px] text-amber-800 font-semibold block">Usulan Masuk (Himatif)</span>
+                <span id="admStatIncomingProposals" class="text-base font-extrabold text-amber-900">0 Usulan</span>
+              </div>
+              <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
+                <span class="text-[11px] text-emerald-800 font-semibold block">Telah Ditindaklanjuti</span>
+                <span id="admStatResolved" class="text-base font-extrabold text-emerald-900">0 Selesai</span>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <span class="text-[11px] text-slate-500 block">Total Kelas Aktif</span>
+                <span id="admStatTotalClasses" class="text-base font-extrabold text-slate-900">0 Kelas</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
+          <div class="flex flex-wrap gap-2">
+            <button onclick="switchAdminTab('proposals')" id="admTabBtn_proposals" class="px-4 py-2.5 rounded-xl font-bold text-xs transition flex items-center gap-2 bg-blue-900 text-white shadow">
+              <span>📥</span>
+              <span>1. Usulan Rekapitulasi dari Himatif</span>
+              <span id="admBadgeProposals" class="px-1.5 py-0.5 text-[10px] rounded-full bg-amber-400 text-slate-950 font-extrabold">0</span>
+            </button>
+            <button onclick="switchAdminTab('analysis')" id="admTabBtn_analysis" class="px-4 py-2.5 rounded-xl font-bold text-xs transition flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-100 border border-slate-200">
+              <span>🏫</span>
+              <span>2. Cek Ketersediaan Ruang & Dosen + Eksekusi Kelas</span>
+            </button>
+            <button onclick="switchAdminTab('courses')" id="admTabBtn_courses" class="px-4 py-2.5 rounded-xl font-bold text-xs transition flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-100 border border-slate-200">
+              <span>📚</span>
+              <span>3. Manajemen Seluruh Kelas & Log Notifikasi</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB 1 ADMIN PRODI -->
+        <div id="adminTab_proposals" class="space-y-6">
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <h3 class="text-base font-extrabold text-slate-900">Daftar Usulan Penambahan Kapasitas / Pembukaan Kelas Baru</h3>
+                <p class="text-xs text-slate-500 mt-0.5">
+                  Rekapitulasi mahasiswa yang kehabisan kuota kelas dari Himpunan Mahasiswa Teknik Informatika (Himatif) untuk dianalisis dan dieksekusi oleh Admin Prodi.
+                </p>
+              </div>
+            </div>
+            <div id="adminProposalGroupContainer" class="p-5 space-y-4"></div>
+          </div>
+        </div>
+
+        <!-- TAB 2 ADMIN PRODI -->
+        <div id="adminTab_analysis" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="lg:col-span-6 space-y-6">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+              <div class="p-5 border-b border-slate-200">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-800 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200">
+                  Analisis Sarana Akademik
+                </span>
+                <h3 class="text-base font-extrabold text-slate-900 mt-1">Matriks Ketersediaan Ruang Kuliah & Laboratorium</h3>
+                <p class="text-xs text-slate-500 mt-0.5">Data kapasitas bangku dan slot jadwal kosong Gedung Fakultas Teknik UTM</p>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                      <th class="py-3 px-4">Kode & Nama Ruangan</th>
+                      <th class="py-3 px-3 text-center">Daya Tampung</th>
+                      <th class="py-3 px-3">Slot Jadwal Kosong</th>
+                      <th class="py-3 px-4 text-right">Status Ruang</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminRoomTableBody" class="divide-y divide-slate-200"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+              <div class="p-5 border-b border-slate-200">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                  Analisis Sumber Daya Dosen
+                </span>
+                <h3 class="text-base font-extrabold text-slate-900 mt-1">Ketersediaan Dosen Pengampu Mata Kuliah</h3>
+                <p class="text-xs text-slate-500 mt-0.5">Pemeriksaan beban mengajar dosen untuk pembukaan kelas paralel atau penambahan kuota</p>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                      <th class="py-3 px-4">Nama Dosen Pengampu</th>
+                      <th class="py-3 px-3">Bidang Keahlian</th>
+                      <th class="py-3 px-3 text-center">Beban SKS</th>
+                      <th class="py-3 px-4 text-right">Kesiapan Mengampu</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminLecturerTableBody" class="divide-y divide-slate-200"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-5">
+            <div class="border-b border-slate-100 pb-3">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-blue-100 text-blue-900 border border-blue-200">
+                Panel Eksekusi Akademik Admin Prodi
+              </span>
+              <h3 class="text-lg font-extrabold text-slate-900 mt-2">Tambah Kapasitas Kelas atau Buka Kelas Baru</h3>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                Setelah jadwal ruang dan ketersediaan dosen pengampu terpenuhi, eksekusi penambahan kuota atau pembukaan kelas paralel baru di sistem SIAKAD dan kirimkan pemberitahuan resmi ke Himatif.
+              </p>
+            </div>
+
+            <form id="adminExecuteForm" onsubmit="handleAdminExecuteAction(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">1. Pilih Mata Kuliah yang Akan Ditindaklanjuti</label>
+                <select id="admExecCourseSelect" onchange="handleAdminCourseSelectionChange()" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-blue-700 focus:outline-none"></select>
+              </div>
+
+              <div id="admExecCourseSummary" class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1"></div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">2. Pilih Jenis Tindakan Penyelesaian Kapasitas</label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <label class="flex items-start gap-2.5 p-3 rounded-xl border border-slate-300 cursor-pointer hover:bg-blue-50/40 transition">
+                    <input type="radio" name="admActionType" value="add_quota" checked onchange="toggleAdminActionFields()" class="mt-0.5" />
+                    <div>
+                      <span class="text-xs font-extrabold text-slate-900 block">Tambah Kapasitas Kuota Kelas</span>
+                      <span class="text-[11px] text-slate-500">Menambah daya tampung kursi pada kelas eksisting (IF 7B)</span>
+                    </div>
+                  </label>
+                  <label class="flex items-start gap-2.5 p-3 rounded-xl border border-slate-300 cursor-pointer hover:bg-blue-50/40 transition">
+                    <input type="radio" name="admActionType" value="open_parallel" onchange="toggleAdminActionFields()" class="mt-0.5" />
+                    <div>
+                      <span class="text-xs font-extrabold text-slate-900 block">Buka Kelas Paralel Baru (IF 7C)</span>
+                      <span class="text-[11px] text-slate-500">Membuka kelas tambahan baru dengan ruang & jadwal terpisah</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div id="admFieldAddQuota" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Jumlah Penambahan Kursi</label>
+                  <input id="admAddQuotaAmount" type="number" min="5" max="40" value="15" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-900" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Ruang Kuliah Penampung</label>
+                  <select id="admQuotaRoomSelect" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-800"></select>
+                </div>
+              </div>
+
+              <div id="admFieldOpenParallel" class="hidden space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Kelas Baru</label>
+                    <input id="admNewClassName" type="text" value="IF 7C" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-900" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Kapasitas Kuota Kelas Baru</label>
+                    <input id="admNewClassQuota" type="number" min="15" max="50" value="35" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-900" />
+                  </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Jadwal & Ruang Kelas Baru</label>
+                    <select id="admNewClassSchedule" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-800"></select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Dosen Pengampu Kelas Baru</label>
+                    <select id="admNewClassLecturer" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-800"></select>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">3. Pesan Pemberitahuan Resmi kepada Himatif</label>
+                <textarea id="admExecNote" rows="2" placeholder="Contoh: Kapasitas kelas telah ditambahkan dan diinformasikan kepada Himatif untuk diteruskan kepada mahasiswa..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-blue-700 focus:outline-none"></textarea>
+              </div>
+
+              <button type="submit" class="w-full py-3.5 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-extrabold text-xs shadow-lg transition flex items-center justify-center gap-2">
+                <span>⚡</span>
+                <span>Eksekusi Pembukaan Kelas / Kuota & Informasikan ke Himatif</span>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- TAB 3 ADMIN PRODI -->
+        <div id="adminTab_courses" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="lg:col-span-8 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+              <div>
+                <h3 class="text-base font-extrabold text-slate-900">Daftar Seluruh Kelas Mata Kuliah di SIAKAD</h3>
+                <p class="text-xs text-slate-500 mt-0.5">Kapasitas kuota dapat disesuaikan langsung oleh Admin Prodi</p>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <th class="py-3 px-4">Kode & Mata Kuliah</th>
+                    <th class="py-3 px-3 text-center">Kelas</th>
+                    <th class="py-3 px-3">Jadwal & Ruang</th>
+                    <th class="py-3 px-3 text-center">Terisi / Kuota</th>
+                    <th class="py-3 px-4 text-right">Tindakan Cepat</th>
+                  </tr>
+                </thead>
+                <tbody id="adminAllCoursesTableBody" class="divide-y divide-slate-200"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="lg:col-span-4 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4">
+            <div class="border-b border-slate-100 pb-3">
+              <h3 class="text-base font-extrabold text-slate-900">Log Eksekusi & Notifikasi Admin</h3>
+              <p class="text-xs text-slate-500">Riwayat penambahan kapasitas dan pengiriman informasi ke Himatif</p>
+            </div>
+            <div id="adminActionLogList" class="space-y-3 max-h-96 overflow-y-auto pr-1"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- 4. PORTAL HIMATIF LENGKAP (advokasi.himatif@trunojoyo.ac.id)              -->
+      <!-- ========================================================================= -->
+      <div id="himatifPortalContainer" class="hidden space-y-6">
+        <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+            <div class="lg:col-span-6 flex items-center gap-4">
+              <div class="w-14 h-14 rounded-2xl bg-amber-500 text-slate-950 font-extrabold text-xl flex items-center justify-center shadow-md shrink-0">
+                HM
+              </div>
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-xs font-bold uppercase tracking-wider text-amber-900 bg-amber-50 border border-amber-300 px-2.5 py-0.5 rounded-full">
+                    Himpunan Mahasiswa Teknik Informatika (Himatif)
+                  </span>
+                  <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200">
+                    Divisi Advokasi & Kesejahteraan Mahasiswa
+                  </span>
+                </div>
+                <h2 class="text-xl font-extrabold text-slate-900 mt-1">Portal Advokasi Kuota KRS Himatif UTM</h2>
+                <p class="text-xs text-slate-500">
+                  Email Resmi: <strong class="text-slate-800 font-mono">advokasi.himatif@trunojoyo.ac.id</strong> • Fungsi: Pendataan, Rekapitulasi & Penyebaran Informasi Kelas
+                </p>
+              </div>
+            </div>
+
+            <div class="lg:col-span-6 grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 lg:pt-0 border-t lg:border-t-0 border-slate-100">
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <span class="text-[11px] text-slate-500 block">Total Keluhan Masuk</span>
+                <span id="hmStatTotal" class="text-base font-extrabold text-slate-900">0 Laporan</span>
+              </div>
+              <div class="p-3 rounded-xl bg-amber-50 border border-amber-200">
+                <span class="text-[11px] text-amber-800 font-semibold block">Menunggu Direkap</span>
+                <span id="hmStatWaiting" class="text-base font-extrabold text-amber-900">0 Belum Direkap</span>
+              </div>
+              <div class="p-3 rounded-xl bg-blue-50 border border-blue-200">
+                <span class="text-[11px] text-blue-800 font-semibold block">Diusulkan ke Admin</span>
+                <span id="hmStatForwarded" class="text-base font-extrabold text-blue-900">0 Diusulkan</span>
+              </div>
+              <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
+                <span class="text-[11px] text-emerald-800 font-semibold block">Kelas Telah Dibuka</span>
+                <span id="hmStatResolved" class="text-base font-extrabold text-emerald-900">0 Selesai</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Banner Balasan Admin Prodi -->
+        <div id="himatifAdminReplyBanner" class="hidden p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-950 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm"></div>
+
+        <!-- Navigasi Tab Himatif -->
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
+          <div class="flex flex-wrap gap-2">
+            <button onclick="switchHimatifTab('incoming')" id="hmTabBtn_incoming" class="px-4 py-2.5 rounded-xl font-bold text-xs transition flex items-center gap-2 bg-blue-900 text-white shadow">
+              <span>📋</span>
+              <span>1. Data Survei Keluhan Mahasiswa</span>
+              <span id="hmBadgeIncoming" class="px-1.5 py-0.5 text-[10px] rounded-full bg-amber-400 text-slate-950 font-extrabold">0</span>
+            </button>
+            <button onclick="switchHimatifTab('recap')" id="hmTabBtn_recap" class="px-4 py-2.5 rounded-xl font-bold text-xs transition flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-100 border border-slate-200">
+              <span>📤</span>
+              <span>2. Rekapitulasi & Pengajuan Usulan ke Admin Prodi</span>
+            </button>
+            <button onclick="switchHimatifTab('broadcast')" id="hmTabBtn_broadcast" class="px-4 py-2.5 rounded-xl font-bold text-xs transition flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-100 border border-slate-200">
+              <span>📢</span>
+              <span>3. Penyebaran Informasi Pembukaan Kelas ke Mahasiswa</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB 1 HIMATIF: DATA SURVEI KELUHAN -->
+        <div id="himatifTab_incoming" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900">Daftar Mahasiswa Pelapor Kehabisan Kuota Kelas</h3>
+              <p class="text-xs text-slate-500 mt-0.5">
+                Validasi data mahasiswa berdasarkan angkatan dan tingkat urgensi mata kuliah sebelum diserahkan ke Admin Prodi.
+              </p>
+            </div>
+            <button onclick="himatifForwardToAdmin()" class="px-4 py-2 rounded-xl bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs shadow transition">
+              📤 Rekap & Serahkan Semua Usulan ke Admin Prodi
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  <th class="py-3.5 px-4">Mahasiswa & NIM</th>
+                  <th class="py-3.5 px-3">Mata Kuliah Dilaporkan</th>
+                  <th class="py-3.5 px-3">Urgensi & Keluhan</th>
+                  <th class="py-3.5 px-3 text-center">Verifikasi Himatif</th>
+                  <th class="py-3.5 px-3 text-center">Status Tindak Lanjut</th>
+                  <th class="py-3.5 px-4 text-right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="himatifIncomingTableBody" class="divide-y divide-slate-200"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 2 HIMATIF: REKAPITULASI PER MATA KULIAH -->
+        <div id="himatifTab_recap" class="hidden bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+          <div class="border-b border-slate-100 pb-3">
+            <h3 class="text-base font-extrabold text-slate-900">Dokumen Rekapitulasi Usulan Pembukaan Kelas per Mata Kuliah</h3>
+            <p class="text-xs text-slate-500 mt-0.5">
+              Kelompokkan dan serahkan dokumen permohonan penambahan kapasitas atau pembukaan kelas baru kepada Admin Program Studi.
+            </p>
+          </div>
+          <div id="himatifRecapGroupBox" class="space-y-4"></div>
+        </div>
+
+        <!-- TAB 3 HIMATIF: BROADCAST PENGUMUMAN KE MAHASISWA -->
+        <div id="himatifTab_broadcast" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+            <div class="border-b border-slate-100 pb-3">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-100 text-emerald-900 border border-emerald-200">
+                Tahap Akhir Advokasi Kuota
+              </span>
+              <h3 class="text-lg font-extrabold text-slate-900 mt-1.5">Sebarkan Informasi Pembukaan Kelas kepada Mahasiswa</h3>
+              <p class="text-xs text-slate-500 mt-0.5">
+                Setelah Admin Prodi menginformasikan bahwa kuota/kelas tambahan telah dibuka, sebarkan pengumuman resmi agar mahasiswa segera mengisi ulang dan mengajukan KRS.
+              </p>
+            </div>
+
+            <form onsubmit="handleHimatifBroadcastSubmit(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Isi Pengumuman Resmi Himatif kepada Mahasiswa</label>
+                <textarea id="himatifBroadcastTextInput" rows="4" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-blue-700 focus:outline-none"></textarea>
+              </div>
+              <button type="submit" class="w-full py-3.5 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-extrabold text-xs shadow-lg transition flex items-center justify-center gap-2">
+                <span>📢</span>
+                <span>Sebarkan Pengumuman Pembukaan Kelas ke Seluruh Portal Mahasiswa</span>
+              </button>
+            </form>
+          </div>
+
+          <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+            <div class="border-b border-slate-100 pb-3">
+              <h3 class="text-base font-extrabold text-slate-900">Riwayat Aktivitas Advokasi Himatif</h3>
+              <p class="text-xs text-slate-500">Log pendataan, penyerahan usulan, dan pengumuman</p>
+            </div>
+            <div id="himatifLogListBox" class="space-y-3 max-h-96 overflow-y-auto pr-1"></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Footer Aplikasi -->
+    <footer class="bg-white border-t border-slate-200 py-4 px-6 text-center text-xs text-slate-500 no-print">
+      Sistem Informasi Akademik (SIAKAD) • Program Studi S1 Teknik Informatika • Universitas Trunodjoyo Madura © 2026
+    </footer>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastBox" class="fixed bottom-5 right-5 z-50 hidden max-w-sm bg-slate-900 text-white px-4 py-3.5 rounded-2xl shadow-2xl border border-slate-700 text-xs flex items-start gap-3">
+    <span id="toastIcon" class="text-lg">✅</span>
+    <div class="flex-1">
+      <div id="toastTitle" class="font-extrabold text-white">Berhasil</div>
+      <div id="toastMsg" class="text-slate-300 mt-0.5"></div>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
